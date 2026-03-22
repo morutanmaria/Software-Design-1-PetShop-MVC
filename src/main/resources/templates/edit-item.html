@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Item</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5" style="max-width: 500px;">
+  <div class="card shadow p-4">
+
+    <h3 class="mb-4">Edit Item</h3>
+
+    <form action="/items/update" method="post">
+
+    <input type="hidden" name="id" th:value="${item.id}">
+
+    <div class="mb-3">
+      <label class="form-label font-weight-bold">Item Name</label>
+      <input type="text" class="form-control" name="name" th:value="${item.name}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <input type="text" class="form-control" name="description" th:value="${item.description}">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Price</label>
+      <input type="number" class="form-control" step="0.01" name="price" th:value="${item.price}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      <select class="form-select" name="type" required>
+        <option value="FOOD" th:selected="${item.type?.name() == 'FOOD'}">Food</option>
+        <option value="TOY" th:selected="${item.type?.name() == 'TOY'}">Toy</option>
+        <option value="ACCESSORY" th:selected="${item.type?.name() == 'ACCESSORY'}">Accessory</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Associated Pet</label>
+      <select class="form-select" name="petId" >
+        <option th:each="p : ${pets}" th:value="${p.id}" th:text="${p.name}"
+                th:selected="${item.pet != null and item.pet.id == p.id}"></option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Image Link</label>
+      <input type="text" class="form-control" name="imagePath" th:value="${item.imagePath}">
+    </div>
+
+    <button type="submit" class="btn btn-warning w-100 font-weight-bold shadow-sm">
+      <i class="fa-solid fa-sync"></i> Update Item
+    </button>
+  </form>
+
+  </div>
+</div>
+
+</body>
+</html>

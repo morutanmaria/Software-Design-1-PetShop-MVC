@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Items</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+  <h2 class="mb-3"> Items</h2>
+
+  <form action="/items/search" method="get" class="d-flex mb-3">
+    <input class="form-control me-2" type="text" name="name" placeholder="Search by name">
+    <button class="btn btn-primary">Search</button>
+  </form>
+
+  <a th:if="${session.loggedUser?.role?.name() == 'ADMIN' or session.loggedUser?.role?.name() == 'SELLER'}"
+     href="/items/add" class="btn btn-success mb-3">
+    <i class="fa fa-plus"></i> Add Item
+  </a>
+
+  <table class="table table-striped table-hover shadow">
+    <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Pet</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="item : ${items}" class="align-middle">
+      <td th:text="${item.name}"></td>
+      <td th:text="${item.type}"></td>
+      <td th:text="${item.description}"></td>
+      <td th:text="${item.price != null ? '$' + #numbers.formatDecimal(item.price, 1, 2) : '$0.00'}"></td>
+      <td th:text="${item.pet != null ? item.pet.name : '-'}"></td>
+
+      <td>
+        <div th:if="${session.loggedUser?.role?.name() == 'ADMIN'}" class="btn-group">
+          <a th:href="@{/items/edit/{id}(id=${item.id})}" class="btn btn-warning btn-sm">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a th:href="@{/items/delete/{id}(id=${item.id})}" class="btn btn-danger btn-sm"
+             onclick="return confirm('Delete this item?');">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
+        <span th:unless="${session.loggedUser?.role?.name() == 'ADMIN'}" class="text-muted small">
+             View Only
+          </span>
+      </td>
+    </tr>
+
+    <tr th:if="${#lists.isEmpty(items)}">
+      <td colspan="6" class="text-center py-3 text-muted">No items found.</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<script>
+  function confirmDelete() {
+    return confirm("Delete this item?");
+  }
+</script>
+
+</body>
+</html>
