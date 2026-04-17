@@ -10,13 +10,15 @@ public class User {
     @Column(unique = true)
     private String username;
     private String password;
+    private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
     public User() {};
-    public User(String username, String password, Role role) {
+    public User(String username, String password, Role role, String email) {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.email = email;
     }
     public Integer getId() {
         return id;
@@ -40,4 +42,10 @@ public class User {
         return role;
     }
     public void setRole(Role role) { this.role = role; }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

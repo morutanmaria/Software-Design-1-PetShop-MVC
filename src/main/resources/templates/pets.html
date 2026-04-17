@@ -18,6 +18,34 @@
     <button type="submit" class="btn btn-primary">Search</button>
   </form>
 
+  <div class="mb-3">
+
+    <form method="get" action="/export/pets" class="d-inline">
+      <input type="hidden" name="format" value="json">
+      <input type="hidden" name="name" th:value="${search}">
+      <input type="hidden" name="sortField" th:value="${sortField}">
+      <input type="hidden" name="sortDir" th:value="${sortDir}">
+      <button type="submit" class="btn btn-primary">Export JSON</button>
+    </form>
+
+    <form method="get" action="/export/pets" class="d-inline">
+      <input type="hidden" name="format" value="csv">
+      <input type="hidden" name="name" th:value="${search}">
+      <input type="hidden" name="sortField" th:value="${sortField}">
+      <input type="hidden" name="sortDir" th:value="${sortDir}">
+      <button type="submit" class="btn btn-secondary">Export CSV</button>
+    </form>
+
+    <form method="get" action="/export/pets" class="d-inline">
+      <input type="hidden" name="format" value="xml">
+      <input type="hidden" name="name" th:value="${search}">
+      <input type="hidden" name="sortField" th:value="${sortField}">
+      <input type="hidden" name="sortDir" th:value="${sortDir}">
+      <button type="submit" class="btn btn-success">Export XML</button>
+    </form>
+
+  </div>
+
   <table class="table table-striped">
     <thead>
     <tr>

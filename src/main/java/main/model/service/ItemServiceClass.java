@@ -1,5 +1,7 @@
 package main.model.service;
 
+import main.model.event.EventManager;
+import main.model.event.ResourceEvent;
 import main.model.entity.Item;
 import main.model.repository.ItemRepository;
 import org.springframework.stereotype.Service;
@@ -11,14 +13,21 @@ import java.util.Optional;
 public class ItemServiceClass implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final EventManager eventManager;
 
-    public ItemServiceClass(ItemRepository itemRepository) {
+    public ItemServiceClass(ItemRepository itemRepository, EventManager eventManager) {
         this.itemRepository = itemRepository;
+        this.eventManager = eventManager;
     }
 
     @Override
     public Item save(Item item) {
-        return itemRepository.save(item);
+        boolean isNew = (item.getId() == null);
+        Item saved = itemRepository.save(item);
+        String eventType = isNew ? "CREATED" : "UPDATED";
+
+        eventManager.notify(new ResourceEvent(eventType, "Item", saved));
+        return saved;
     }
 
     @Override
@@ -33,6 +42,8 @@ public class ItemServiceClass implements ItemService {
 
     @Override
     public void deleteById(Integer id) {
+        Item item = itemRepository.findById(id).orElse(null);
         itemRepository.deleteById(id);
+        eventManager.notify(new ResourceEvent("DELETED", "Item", item));
     }
 }

@@ -53,11 +53,13 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@RequestParam String username,
                            @RequestParam String password,
+                           @RequestParam String email,
                            @RequestParam(required = false) String role) {
 
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
+        user.setEmail(email);
 
         if ("ADMIN".equals(role)) {
             user.setRole(Role.ADMIN);
@@ -65,7 +67,7 @@ public class AuthController {
             user.setRole(Role.SELLER);
         }
 
-        userService.regiserUser(user);
+        userService.registerUser(user);
         return "redirect:/login";
     }
 

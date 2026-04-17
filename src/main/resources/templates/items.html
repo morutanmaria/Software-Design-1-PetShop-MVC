@@ -23,6 +23,25 @@
     <i class="fa fa-plus"></i> Add Item
   </a>
 
+  <div class="mb-3">
+
+    <form method="get" action="/export/items" class="d-inline">
+      <input type="hidden" name="format" value="json">
+      <button type="submit" class="btn btn-primary">Export JSON</button>
+    </form>
+
+    <form method="get" action="/export/items" class="d-inline">
+      <input type="hidden" name="format" value="csv">
+      <button type="submit" class="btn btn-secondary">Export CSV</button>
+    </form>
+
+    <form method="get" action="/export/items" class="d-inline">
+      <input type="hidden" name="format" value="xml">
+      <button type="submit" class="btn btn-success">Export XML</button>
+    </form>
+
+  </div>
+
   <table class="table table-striped table-hover shadow">
     <thead class="table-dark">
     <tr>
