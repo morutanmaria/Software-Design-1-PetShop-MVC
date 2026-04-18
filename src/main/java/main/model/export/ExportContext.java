@@ -10,7 +10,7 @@ public class ExportContext {
         this.strategy = strategy;
     }
 
-    public String export(List<?> data) {
+    public byte[] export(Object data) throws Exception {
         return strategy.export(data);
     }
 }

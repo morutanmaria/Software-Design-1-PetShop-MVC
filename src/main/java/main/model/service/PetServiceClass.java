@@ -23,7 +23,7 @@ public class PetServiceClass implements PetService{
     @Override
     public Pet savePet(Pet pet) {
         Pet savedPet = petRepository.save(pet);
-        eventManager.notify(new ResourceEvent("CREATED", "Pet", savedPet));
+        eventManager.notify(new ResourceEvent("CREATED", "Pet", savedPet.getName(), savedPet));
         return savedPet;
     }
     @Override
@@ -44,13 +44,15 @@ public class PetServiceClass implements PetService{
     @Override
     public void deletePetById(Integer id){
         Pet deletedPet = petRepository.findById(id).orElse(null);
+        assert deletedPet != null;
+        String name = deletedPet.getName();
         petRepository.deleteById(id);
-        eventManager.notify(new ResourceEvent("DELETED", "Pet", deletedPet));
+        eventManager.notify(new ResourceEvent("DELETED", "Pet", name, deletedPet));
     }
     @Override
     public void updatePet(Pet pet){
         Pet savedPet = petRepository.save(pet);
-        eventManager.notify(new ResourceEvent("UPDATED", "Pet", savedPet));
+        eventManager.notify(new ResourceEvent("UPDATED", "Pet", savedPet.getName(), savedPet));
     }
 
     public List<Pet> getAllPetsSorted(String sortField, String sortDir) {

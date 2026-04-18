@@ -129,7 +129,7 @@ public class PetController {
             pet.setBreed(breed);
             pet.setAge(age);
             pet.setPrice(BigDecimal.valueOf(price));
-            petService.savePet(pet);
+            petService.updatePet(pet);
         }
 
         return "redirect:/pets";

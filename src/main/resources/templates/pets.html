@@ -46,20 +46,19 @@
 
   </div>
 
-  <table class="table table-striped">
+  <table class="table table-striped table-hover align-middle"
+         style="table-layout: fixed;">
+
     <thead>
     <tr>
+      <th style="width:80px;">Image</th>
       <th>
         Name
         <a th:href="@{/pets(sortField='name', sortDir='asc', search=${search})}" class="btn btn-sm btn-outline-success ms-1">↑</a>
         <a th:href="@{/pets(sortField='name', sortDir='desc', search=${search})}" class="btn btn-sm btn-outline-danger ms-1">↓</a>
       </th>
-      <th>
-        Species
-      </th>
-      <th>
-        Breed
-      </th>
+      <th>Species</th>
+      <th>Breed</th>
       <th>
         Age
         <a th:href="@{/pets(sortField='age', sortDir='asc', search=${search})}" class="btn btn-sm btn-outline-success ms-1">↑</a>
@@ -73,23 +72,39 @@
       <th>Actions</th>
     </tr>
     </thead>
+
     <tbody>
     <tr th:each="pet : ${pets}">
-      <td th:text="${pet.name}">Pet Name</td>
-      <td th:text="${pet.species}">Pet Species</td>
-      <td th:text="${pet.breed}">Pet Breed</td>
-      <td th:text="${pet.age}">Pet Age</td>
-      <td th:text="${pet.price}">Pet Price</td>
+
+      <!-- IMAGE -->
+      <td class="text-center">
+        <img th:src="${pet.imagePath != null} ? ${pet.imagePath} : '/images/default.png'"
+             style="width:60px; height:60px; object-fit:cover; border-radius:8px;"
+             alt="pet">
+      </td>
+
+      <td th:text="${pet.name}"></td>
+      <td th:text="${pet.species}"></td>
+      <td th:text="${pet.breed}"></td>
+      <td th:text="${pet.age}"></td>
+      <td th:text="${pet.price}"></td>
+
       <td>
         <a th:if="${loggedUser != null and loggedUser.role.name() == 'ADMIN'}"
-           th:href="@{'/pets/edit/' + ${pet.id}}" class="btn btn-sm btn-warning">Edit</a>
+           th:href="@{'/pets/edit/' + ${pet.id}}"
+           class="btn btn-sm btn-warning">Edit</a>
 
         <a th:if="${loggedUser != null and loggedUser.role.name() == 'ADMIN'}"
-           th:href="@{'/pets/delete/' + ${pet.id}}" class="btn btn-sm btn-danger"
-           onclick="return confirm('Are you sure you want to delete this pet?');">Delete</a>
+           th:href="@{'/pets/delete/' + ${pet.id}}"
+           class="btn btn-sm btn-danger"
+           onclick="return confirm('Are you sure you want to delete this pet?');">
+          Delete
+        </a>
       </td>
+
     </tr>
     </tbody>
+
   </table>
 </div>
 

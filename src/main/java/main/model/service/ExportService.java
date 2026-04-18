@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class ExportService {
 
-    public String export(List<?> data, String format) {
+    public byte[] export(List<?> data, String format) throws Exception {
 
         ExportContext context = new ExportContext();
 

@@ -6,6 +6,10 @@ import main.model.dto.ItemDTO;
 import main.model.dto.PetDTO;
 import main.model.entity.Item;
 import main.model.entity.Pet;
+import main.model.export.CsvExportStrategy;
+import main.model.export.ExportStrategy;
+import main.model.export.JsonExportStrategy;
+import main.model.export.XmlExportStrategy;
 import main.model.service.ExportService;
 import main.model.service.ItemService;
 import main.model.service.PetService;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ExportController {
@@ -24,11 +29,17 @@ public class ExportController {
     private final PetService petService;
     private final ItemService itemService;
     private final ExportService exportService;
+    private final Map<String, ExportStrategy> strategies;
 
-    public ExportController(PetService petService, ItemService itemService, ExportService exportService) {
+    public ExportController(PetService petService, ItemService itemService, ExportService exportService, List<ExportStrategy> strategyList) {
         this.petService = petService;
         this.itemService = itemService;
         this.exportService = exportService;
+        this.strategies = Map.of(
+                "json", strategyList.stream().filter(s -> s instanceof JsonExportStrategy).findFirst().get(),
+                "csv", strategyList.stream().filter(s -> s instanceof CsvExportStrategy).findFirst().get(),
+                "xml", strategyList.stream().filter(s -> s instanceof XmlExportStrategy).findFirst().get()
+        );
     }
 
     @GetMapping("/export/pets")
@@ -61,34 +72,34 @@ public class ExportController {
     }
 
     private ResponseEntity<byte[]> buildFileResponse(Object data, String format, String baseName) throws Exception {
-        byte[] fileData;
-        String filename;
+
+        ExportStrategy strategy = strategies.get(format.toLowerCase());
+
+        if (strategy == null) {
+            throw new IllegalArgumentException("Invalid format: " + format);
+        }
+
+        byte[] fileData = strategy.export(data);
+
         String contentType;
+        String filename;
 
         switch (format.toLowerCase()) {
-
             case "json" -> {
-                ObjectMapper mapper = new ObjectMapper();
-                fileData = mapper.writerWithDefaultPrettyPrinter()
-                        .writeValueAsBytes(data);
-                filename = baseName + ".json";
                 contentType = "application/json";
+                filename = baseName + ".json";
             }
-
             case "csv" -> {
-                fileData = toCsv(data).getBytes();
-                filename = baseName + ".csv";
                 contentType = "text/csv";
+                filename = baseName + ".csv";
             }
-
             case "xml" -> {
-                XmlMapper xmlMapper = new XmlMapper();
-                fileData = xmlMapper.writeValueAsBytes(data);
-                filename = baseName + ".xml";
                 contentType = "application/xml";
+                filename = baseName + ".xml";
             }
-            default -> throw new IllegalArgumentException("Invalid format: " + format);
+            default -> throw new IllegalArgumentException("Invalid format");
         }
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType(contentType))

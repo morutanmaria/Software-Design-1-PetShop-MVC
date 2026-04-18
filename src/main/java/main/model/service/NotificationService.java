@@ -31,7 +31,7 @@ public class NotificationService implements EventListener {
             message.setSubject("PetShop Notification");
 
             message.setText(
-                    "Entity: " + event.getEntity() + "\n" + "Action: " + event.getType() + "\n" + "System event executed successfully."
+                    "Entity: " + event.getEntity() + "\n" + "Name: " + event.getName() + "\n" + "Action: " + event.getType() + "\n" + "System event executed successfully."
             );
 
             mailSender.send(message);

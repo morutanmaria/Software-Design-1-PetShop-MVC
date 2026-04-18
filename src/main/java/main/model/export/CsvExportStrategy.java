@@ -1,37 +1,54 @@
 package main.model.export;
 
 
+import main.model.dto.ItemDTO;
+import main.model.dto.PetDTO;
 import main.model.entity.Item;
 import main.model.entity.Pet;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component("csv")
 public class CsvExportStrategy implements ExportStrategy {
+
     @Override
-    public String export(List<?> data) {
+    public byte[] export(Object data) {
+
         StringBuilder sb = new StringBuilder();
-        if (data.isEmpty()) return "";
 
-        Object first = data.get(0);
+        if (data instanceof List<?> list && !list.isEmpty()) {
+            Object first = list.get(0);
 
-        if (first instanceof main.model.entity.Pet) {
-            sb.append("id,name,species\n");
-
-            for (Object obj : data) {
-                Pet p = (Pet) obj;
-                sb.append(p.getId()).append(",").append(p.getName()).append(",").append(p.getSpecies()).append("\n");
+            if (first instanceof PetDTO) {
+                sb.append("id,name,species,breed,gender,age,price,available\n");
+                for (PetDTO p : (List<PetDTO>) list) {
+                    sb.append(p.getId()).append(",")
+                            .append(p.getName()).append(",")
+                            .append(p.getSpecies()).append(",")
+                            .append(p.getBreed()).append(",")
+                            .append(p.getGender()).append(",")
+                            .append(p.getAge()).append(",")
+                            .append(p.getPrice()).append(",")
+                            .append(p.isAvailable())
+                            .append("\n");
+                }
             }
 
-        }
-        else if (first instanceof main.model.entity.Item) {
-            sb.append("id,name,price\n");
-
-            for (Object obj : data) {
-                Item i = (Item) obj;
-                sb.append(i.getId()).append(",").append(i.getName()).append(",").append(i.getPrice()).append("\n");
+            else if (first instanceof ItemDTO) {
+                sb.append("id,name,description,price,type,petName\n");
+                for (ItemDTO i : (List<ItemDTO>) list) {
+                    sb.append(i.getId()).append(",")
+                            .append(i.getName()).append(",")
+                            .append(i.getDescription()).append(",")
+                            .append(i.getPrice()).append(",")
+                            .append(i.getType()).append(",")
+                            .append(i.getPetName())
+                            .append("\n");
+                }
             }
         }
 
-        return sb.toString();
+        return sb.toString().getBytes();
     }
 }

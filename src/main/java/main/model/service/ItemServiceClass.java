@@ -26,7 +26,7 @@ public class ItemServiceClass implements ItemService {
         Item saved = itemRepository.save(item);
         String eventType = isNew ? "CREATED" : "UPDATED";
 
-        eventManager.notify(new ResourceEvent(eventType, "Item", saved));
+        eventManager.notify(new ResourceEvent(eventType, "Item", saved.getName(), saved));
         return saved;
     }
 
@@ -43,7 +43,9 @@ public class ItemServiceClass implements ItemService {
     @Override
     public void deleteById(Integer id) {
         Item item = itemRepository.findById(id).orElse(null);
+        assert item != null;
+        String name = item.getName();
         itemRepository.deleteById(id);
-        eventManager.notify(new ResourceEvent("DELETED", "Item", item));
+        eventManager.notify(new ResourceEvent("DELETED", "Item", name, item));
     }
 }
